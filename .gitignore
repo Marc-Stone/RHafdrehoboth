@@ -6,10 +6,10 @@ out/
 dist/
 *.tsbuildinfo
 
-# Environnement (ne jamais versionner les clés)
-.env
-.env.*
-!.env.example
+# Environnement : seule la clé PUBLIQUE (publishable) Supabase est versionnée.
+# Ne JAMAIS ajouter ici la clé service_role ni un autre secret.
+.env.local
+.env.*.local
 
 # Supabase local
 supabase/.temp/
