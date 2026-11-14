@@ -1,0 +1,23 @@
+# Dépendances
+node_modules/
+
+# Builds
+out/
+dist/
+*.tsbuildinfo
+
+# Environnement (ne jamais versionner les clés)
+.env
+.env.*
+!.env.example
+
+# Supabase local
+supabase/.temp/
+supabase/.branches/
+
+# Divers
+*.log
+.DS_Store
+Thumbs.db
+auto-imports.d.ts
+deno.lock

@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Sora', sans-serif;
+  --font-label: 'Plus Jakarta Sans', sans-serif;
+
+  /* Background (warm off-white) */
+  --background-50: 0.985 0.004 90;
+  --background-100: 0.97 0.006 90;
+  --background-200: 0.94 0.008 90;
+  --background-300: 0.90 0.01 90;
+  --background-400: 0.84 0.012 90;
+  --background-500: 0.76 0.014 90;
+  --background-600: 0.68 0.014 90;
+  --background-700: 0.58 0.014 90;
+  --background-800: 0.46 0.014 90;
+  --background-900: 0.34 0.012 90;
+  --background-950: 0.24 0.01 90;
+
+  /* Primary (magenta / rose from the crest) */
+  --primary-50: 0.97 0.02 350;
+  --primary-100: 0.94 0.04 350;
+  --primary-200: 0.88 0.07 350;
+  --primary-300: 0.80 0.11 350;
+  --primary-400: 0.72 0.16 350;
+  --primary-500: 0.65 0.20 350;
+  --primary-600: 0.58 0.18 350;
+  --primary-700: 0.50 0.16 350;
+  --primary-800: 0.42 0.13 350;
+  --primary-900: 0.34 0.10 350;
+  --primary-950: 0.26 0.07 350;
+
+  /* Accent (gold from the crest crown & frame) */
+  --accent-50: 0.98 0.02 85;
+  --accent-100: 0.96 0.04 85;
+  --accent-200: 0.92 0.07 83;
+  --accent-300: 0.87 0.11 82;
+  --accent-400: 0.82 0.14 82;
+  --accent-500: 0.76 0.16 80;
+  --accent-600: 0.68 0.15 78;
+  --accent-700: 0.60 0.14 76;
+  --accent-800: 0.52 0.12 74;
+  --accent-900: 0.44 0.10 72;
+  --accent-950: 0.34 0.08 70;
+
+  /* Secondary (warm stone) */
+  --secondary-50: 0.98 0.01 70;
+  --secondary-100: 0.95 0.01 70;
+  --secondary-200: 0.90 0.015 70;
+  --secondary-300: 0.82 0.02 70;
+  --secondary-400: 0.68 0.02 70;
+  --secondary-500: 0.55 0.02 70;
+  --secondary-600: 0.48 0.02 70;
+  --secondary-700: 0.42 0.02 70;
+  --secondary-800: 0.36 0.02 70;
+  --secondary-900: 0.30 0.02 70;
+  --secondary-950: 0.22 0.015 70;
+
+  /* Foreground (warm charcoal) */
+  --foreground-50: 0.97 0.01 90;
+  --foreground-100: 0.93 0.01 90;
+  --foreground-200: 0.86 0.01 90;
+  --foreground-300: 0.74 0.01 90;
+  --foreground-400: 0.60 0.012 90;
+  --foreground-500: 0.48 0.012 90;
+  --foreground-600: 0.40 0.012 90;
+  --foreground-700: 0.32 0.012 90;
+  --foreground-800: 0.26 0.012 90;
+  --foreground-900: 0.20 0.01 90;
+  --foreground-950: 0.16 0.01 90;
+}
+
+.dark {
+  --background-50: 0.16 0.01 90;
+  --background-100: 0.20 0.01 90;
+  --background-200: 0.24 0.012 90;
+  --background-300: 0.30 0.014 90;
+  --background-400: 0.36 0.014 90;
+  --background-500: 0.42 0.014 90;
+  --background-600: 0.50 0.014 90;
+  --background-700: 0.60 0.014 90;
+  --background-800: 0.72 0.014 90;
+  --background-900: 0.85 0.012 90;
+  --background-950: 0.95 0.008 90;
+
+  --foreground-50: 0.20 0.01 90;
+  --foreground-100: 0.26 0.012 90;
+  --foreground-200: 0.32 0.012 90;
+  --foreground-300: 0.40 0.012 90;
+  --foreground-400: 0.52 0.012 90;
+  --foreground-500: 0.62 0.012 90;
+  --foreground-600: 0.72 0.012 90;
+  --foreground-700: 0.80 0.012 90;
+  --foreground-800: 0.88 0.01 90;
+  --foreground-900: 0.94 0.01 90;
+  --foreground-950: 0.97 0.008 90;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: oklch(var(--foreground-900));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: oklch(var(--primary-200));
+  color: oklch(var(--primary-950));
+}
+
+/* Cartes et panneaux : profondeur obtenue par les bordures et les couches
+   de couleur, jamais par une ombre. */
+@layer components {
+  .surface-card {
+    @apply rounded-lg border border-background-200 bg-background-50;
+  }
+  .surface-muted {
+    @apply rounded-lg border border-background-200/80 bg-background-100/50;
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-600;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(var(--secondary-300));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(var(--secondary-400));
+  background-clip: content-box;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  /* On ne definit pas `transform` sur la frame finale : une fois l'animation
+     terminee, l'element n'a plus de transform, ce qui evite qu'il devienne
+     le repere de position des elements `position: fixed` qu'il contient
+     (cause du positionnement decale des formulaires et fenetres modales). */
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-fade-up {
+  animation: fadeInUp 0.5s ease both;
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease both;
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Print styles — isolate the member card for A6 printing */
+@media print {
+  @page {
+    size: A6;
+    margin: 0;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 105mm;
+    height: 148mm;
+    max-width: none !important;
+    margin: 0;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-area * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
