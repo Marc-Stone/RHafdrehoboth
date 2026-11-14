@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { lazyWithRetry } from '../lib/chunkRecovery';
 import type { RouteObject } from 'react-router-dom';
 import RequireAuth from '../components/feature/RequireAuth';
 import RequireRole from '../components/feature/RequireRole';
@@ -13,23 +13,23 @@ import { ROUTE_ROLES } from '../lib/permissions';
  * ⚠️ `element` reçoit toujours un élément JSX (jamais l'appel `lazy()`), et le
  * composant est enveloppé dans un `<Suspense>` avec un fallback stable.
  */
-const NotFound = lazy(() => import('../pages/NotFound'));
-const LoginPage = lazy(() => import('../pages/auth/page'));
-const ForbiddenPage = lazy(() => import('../pages/Forbidden'));
-const DashboardPage = lazy(() => import('../pages/dashboard/page'));
-const MembersPage = lazy(() => import('../pages/members/page'));
-const MemberDetailPage = lazy(() => import('../pages/members/detail/page'));
-const ScannerPage = lazy(() => import('../pages/scanner/page'));
-const CommunitiesPage = lazy(() => import('../pages/communities/page'));
-const EventsPage = lazy(() => import('../pages/events/page'));
-const AttendancesPage = lazy(() => import('../pages/attendances/page'));
-const ReportsPage = lazy(() => import('../pages/reports/page'));
-const NotificationsPage = lazy(() => import('../pages/notifications/page'));
-const ActivityPage = lazy(() => import('../pages/activity/page'));
-const SettingsPage = lazy(() => import('../pages/settings/page'));
-const UsersPage = lazy(() => import('../pages/users/page'));
-const AccountPage = lazy(() => import('../pages/account/page'));
-const WhatsAppPage = lazy(() => import('../pages/whatsapp/page'));
+const NotFound = lazyWithRetry(() => import('../pages/NotFound'));
+const LoginPage = lazyWithRetry(() => import('../pages/auth/page'));
+const ForbiddenPage = lazyWithRetry(() => import('../pages/Forbidden'));
+const DashboardPage = lazyWithRetry(() => import('../pages/dashboard/page'));
+const MembersPage = lazyWithRetry(() => import('../pages/members/page'));
+const MemberDetailPage = lazyWithRetry(() => import('../pages/members/detail/page'));
+const ScannerPage = lazyWithRetry(() => import('../pages/scanner/page'));
+const CommunitiesPage = lazyWithRetry(() => import('../pages/communities/page'));
+const EventsPage = lazyWithRetry(() => import('../pages/events/page'));
+const AttendancesPage = lazyWithRetry(() => import('../pages/attendances/page'));
+const ReportsPage = lazyWithRetry(() => import('../pages/reports/page'));
+const NotificationsPage = lazyWithRetry(() => import('../pages/notifications/page'));
+const ActivityPage = lazyWithRetry(() => import('../pages/activity/page'));
+const SettingsPage = lazyWithRetry(() => import('../pages/settings/page'));
+const UsersPage = lazyWithRetry(() => import('../pages/users/page'));
+const AccountPage = lazyWithRetry(() => import('../pages/account/page'));
+const WhatsAppPage = lazyWithRetry(() => import('../pages/whatsapp/page'));
 
 const routes: RouteObject[] = [
   {

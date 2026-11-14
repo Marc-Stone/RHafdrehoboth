@@ -1,4 +1,5 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
+import { lazyWithRetry } from '@/lib/chunkRecovery';
 import { useAuth } from '@/hooks/useAuth';
 import { useMembers } from '@/hooks/useMembers';
 import { useCommunities } from '@/hooks/useCommunities';
@@ -16,7 +17,7 @@ import type { NameValue } from './ChartsSection';
 import type { ActivityAction } from '@/lib/types';
 
 /** Graphiques chargés à la demande : le tableau de bord s'affiche sans attendre. */
-const ChartsPanel = lazy(() => import('./ChartsPanel'));
+const ChartsPanel = lazyWithRetry(() => import('./ChartsPanel'));
 
 function ChartsSkeleton() {
   return (
