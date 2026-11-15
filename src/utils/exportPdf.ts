@@ -64,7 +64,12 @@ export function exportTableToPdf({ title, subtitle, columns, rows }: PdfTableOpt
     <tbody>${bodyRows}</tbody>
   </table>
   <script>
-    window.onload = function () { setTimeout(function () { window.print(); }, 300); };
+    // Impression automatique uniquement dans la fenêtre pop-up. Dans l'iframe
+    // de secours, c'est la page parente qui déclenche l'impression : sinon la
+    // boîte de dialogue s'ouvrait deux fois de suite.
+    if (window.top === window) {
+      window.onload = function () { setTimeout(function () { window.print(); }, 300); };
+    }
   </script>
 </body>
 </html>`;

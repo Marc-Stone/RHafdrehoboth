@@ -1,6 +1,18 @@
 import * as XLSX from 'xlsx';
 import type { ReportData } from '@/lib/reports';
-import { formatDateShort } from '@/utils/date';
+
+const DATE_FORMAT = 'dd/mm/yyyy';
+
+/**
+ * Convertit une date ISO (AAAA-MM-JJ) en vraie date Excel : avant, les dates
+ * étaient écrites en texte (« 15 nov. 2026 ») et ne pouvaient être ni triées
+ * ni filtrées correctement dans le tableur.
+ */
+function toExcelDate(iso: string | null | undefined): Date | string {
+  if (!iso) return '—';
+  const d = new Date(`${iso}T00:00:00`);
+  return Number.isNaN(d.getTime()) ? iso : d;
+}
 
 /**
  * Export Excel (xlsx) d'un rapport de présences.
@@ -55,13 +67,13 @@ export function exportReportExcel(data: ReportData, fileName: string): void {
     r.gender || '—',
     r.community || '—',
     r.eventTitle || '—',
-    r.date ? formatDateShort(r.date) : '—',
+    toExcelDate(r.date),
     r.time || '—',
     r.status,
     r.method,
     r.scannedByName || '—',
   ]);
-  const wsDetail = XLSX.utils.aoa_to_sheet([detailHead, ...detailRows]);
+  const wsDetail = XLSX.utils.aoa_to_sheet([detailHead, ...detailRows], { dateNF: DATE_FORMAT });
   wsDetail['!cols'] = [
     { wch: 14 },
     { wch: 26 },
@@ -109,7 +121,7 @@ export function exportReportExcel(data: ReportData, fileName: string): void {
   const evRows = data.eventStats.map((e) => [
     e.name,
     e.isSession ? e.parentTitle || '—' : '—',
-    e.date ? formatDateShort(e.date) : '—',
+    toExcelDate(e.date),
     e.startTime || '—',
     e.endTime || '—',
     e.community,
@@ -120,7 +132,7 @@ export function exportReportExcel(data: ReportData, fileName: string): void {
     e.excused,
     e.rate,
   ]);
-  const wsEv = XLSX.utils.aoa_to_sheet([evHead, ...evRows]);
+  const wsEv = XLSX.utils.aoa_to_sheet([evHead, ...evRows], { dateNF: DATE_FORMAT });
   wsEv['!cols'] = [
     { wch: 26 },
     { wch: 22 },

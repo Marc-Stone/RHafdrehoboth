@@ -5,6 +5,7 @@ import { formatDateFr, formatDateShort } from '@/utils/date';
 import type { AttendanceRecord, AttendanceStatus } from '@/lib/types';
 import { attendanceStatusOptions, attendanceStatusStyle, presentStatuses } from '@/lib/constants';
 import { exportTableToPdf } from '@/utils/exportPdf';
+import { logActivity } from '@/lib/activity';
 import ExportMenu from '@/pages/attendances/components/ExportMenu';
 import PageHeader from '@/components/base/PageHeader';
 import StatTile from '@/components/base/StatTile';
@@ -140,39 +141,55 @@ export default function AttendancesPage() {
     if (res?.error) setActionError(`Statut non enregistré : ${res.error}`);
   };
 
-  const handleExportAll = () => {
+  // Les exports reprennent exactement ce qui est affiché à l'écran (recherche +
+  // filtre de statut) : avant, le PDF contenait tous les pointages quels que
+  // soient les filtres appliqués.
+  const filtersLabel = (): string => {
+    const parts: string[] = [];
+    if (statusFilter) parts.push(`statut « ${statusFilter} »`);
+    const term = deferredSearch.trim();
+    if (term) parts.push(`recherche « ${term} »`);
+    return parts.length > 0 ? ` — Filtres : ${parts.join(', ')}` : '';
+  };
+
+  const exportSessions = (source: Session[], title: string, baseSubtitle: string, logLabel: string) => {
     const rows: string[][] = [];
-    sessions.forEach((s) =>
-      s.records.forEach((r) =>
-        rows.push([r.memberName, r.memberNumber, r.community, s.eventTitle, formatDateShort(s.eventDate), r.time, r.status, r.scannedByName || '—']),
-      ),
+    let presentTotal = 0;
+    source.forEach((s) =>
+      s.records.forEach((r) => {
+        if (presentStatuses.includes(r.status)) presentTotal += 1;
+        rows.push([r.memberName, r.memberNumber, r.community, s.eventTitle, formatDateShort(s.eventDate), r.time, r.status, r.scannedByName || '—']);
+      }),
     );
+    const total = rows.length;
+    // « présences » ne compte plus les absents : on distingue pointages et présents.
+    const counts = `${total} pointage${total > 1 ? 's' : ''}, dont ${presentTotal} présent${presentTotal > 1 ? 's' : ''} (retards inclus)`;
     exportTableToPdf({
-      title: 'Historique des présences',
-      subtitle: 'Pointages classés par événement et par date',
+      title,
+      subtitle: `${baseSubtitle} — ${counts}${filtersLabel()}`,
       columns: ['Membre', 'Numéro', 'Communauté', 'Événement', 'Date', 'Heure', 'Statut', 'Responsable'],
       rows,
     });
+    void logActivity('export', `a exporté ${logLabel} en PDF (${total} ligne${total > 1 ? 's' : ''})`);
+  };
+
+  const handleExportAll = () => {
+    exportSessions(filtered, 'Historique des présences', 'Pointages classés par événement et par date', "l'historique des présences");
   };
 
   const handleExportDay = (date: string) => {
-    const rows: string[][] = [];
-    sessions
-      .filter((s) => s.eventDate === date)
-      .forEach((s) =>
-        s.records.forEach((r) =>
-          rows.push([r.memberName, r.memberNumber, r.community, s.eventTitle, formatDateShort(s.eventDate), r.time, r.status, r.scannedByName || '—']),
-        ),
-      );
-    exportTableToPdf({
-      title: `Présences du ${formatDateFr(date)}`,
-      subtitle: `${rows.length} présence${rows.length > 1 ? 's' : ''} enregistrée${rows.length > 1 ? 's' : ''} ce jour`,
-      columns: ['Membre', 'Numéro', 'Communauté', 'Événement', 'Date', 'Heure', 'Statut', 'Responsable'],
-      rows,
-    });
+    exportSessions(
+      filtered.filter((s) => s.eventDate === date),
+      `Présences du ${formatDateFr(date)}`,
+      'Pointages de la journée',
+      `les présences du ${formatDateFr(date)}`,
+    );
   };
 
-  const countForDate = (date: string) => records.filter((r) => r.eventDate === date).length;
+  // Les compteurs du menu d'export reflètent eux aussi les filtres actifs.
+  const countForDate = (date: string) =>
+    filtered.filter((s) => s.eventDate === date).reduce((sum, s) => sum + s.records.length, 0);
+  const exportableTotal = filtered.reduce((sum, s) => sum + s.records.length, 0);
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
@@ -201,7 +218,7 @@ export default function AttendancesPage() {
               onExportDay={handleExportDay}
               onExportAll={handleExportAll}
               countForDate={countForDate}
-              totalCount={totalPointages}
+              totalCount={exportableTotal}
             />
           ) : null
         }

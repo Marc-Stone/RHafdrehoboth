@@ -21,22 +21,22 @@ Application web moderne, responsive et sécurisée permettant à une église de 
 - `/settings` — Paramètres de l'église
 
 ## 3. Fonctionnalités principales
-- [ ] Authentification complète (connexion, déconnexion, réinitialisation, sessions, journal)
+- [x] Authentification complète (connexion, déconnexion, réinitialisation, sessions, journal)
 - [x] Rôles et permissions (Super Admin, Pasteur, Secrétaire, Responsable communauté, Agent pointage)
-- [ ] Gestion des communautés
-- [ ] Gestion des membres (profil complet, numéro auto, QR Code unique)
-- [ ] Génération de QR Code + carte de membre A6 imprimable
-- [ ] Scanner QR (caméra) avec détection de doublon
+- [x] Gestion des communautés
+- [x] Gestion des membres (profil complet, numéro auto, QR Code unique)
+- [x] Génération de QR Code + carte de membre A6 imprimable
+- [x] Scanner QR (caméra) avec détection de doublon
 - [x] Gestion des événements (avec pointage propre)
 - [x] Enregistrement des présences
-- [ ] Tableau de bord temps réel (stats + graphiques)
-- [ ] Recherche instantanée
-- [ ] Rapports PDF / Excel
-- [ ] Notifications extensibles (e-mail / WhatsApp plus tard)
-- [ ] Paramètres de l'église
-- [ ] Journal d'activité complet
-- [ ] Sécurité (routes protégées, soft delete, validation)
-- [ ] Thème clair / sombre, interface premium
+- [x] Tableau de bord temps réel (stats + graphiques)
+- [x] Recherche instantanée
+- [x] Rapports PDF / Excel
+- [x] Notifications extensibles (e-mail / WhatsApp plus tard)
+- [x] Paramètres de l'église
+- [x] Journal d'activité complet
+- [x] Sécurité (routes protégées, soft delete, validation)
+- [x] Thème clair / sombre, interface premium
 
 ## 4. Modèle de données (base Supabase)
 
@@ -177,8 +177,10 @@ Application web moderne, responsive et sécurisée permettant à une église de 
 - Journalisation des tentatives d'accès refusées.
 
 ### ⏳ Restant (optionnel)
-- Stockage des images (photos de membres, logo, avatar) dans Supabase Storage pour les partager entre les admins (actuellement encore en local IndexedDB par appareil).
-- Centre de notifications : la table `notifications` n'a pas encore de source d'alimentation (aucune politique INSERT). À brancher sur Resend/WhatsApp pour émettre réellement des notifications.
+- ~~Stockage des images dans Supabase Storage~~ — **fait** (buckets `images` / `documents`, Edge Function `upload-church-image`).
+- ~~Alimentation du centre de notifications~~ — **fait** (Edge Function `notify` : notifications internes à l'application).
+- Envoi des notifications par **e-mail** (Resend) : non branché.
+- Envoi **WhatsApp automatique** (API WhatsApp Business) : non branché — actuellement envoi manuel via liens `wa.me`.
 
 ### ✅ Terminé — Audit final & durcissement
 - **Intégrité des données** : ajout des contraintes d'unicité manquantes (numéro de membre, téléphone, e-mail, nom de communauté) via index partiels tenant compte du soft-delete. Les messages d'erreur dédiés côté frontend sont désormais réellement déclenchés.
@@ -230,7 +232,7 @@ Application web moderne, responsive et sécurisée permettant à une église de 
 ### Phase 4 : Événements
 - Objectif : gérer les événements avec leur pointage.
 - Livrable : liste, création, détail, pointage propre à chaque événement.
-- **Statut : Terminé** — page `/events` (liste, création/édition/suppression, statuts, filtre par statut et recherche) ; page `/attendances` (historique complet des pointages par événement et par date, recherche, export CSV) ; scanner ciblé sur un événement sélectionnable.
+- **Statut : Terminé** — page `/events` (liste, création/édition/suppression, statuts, filtre par statut et recherche) ; page `/attendances` (historique complet des pointages par événement et par date, recherche, export PDF) ; scanner ciblé sur un événement sélectionnable.
 
 ### Phase 5 : Scanner QR Code
 - Objectif : pointage par caméra.
@@ -239,7 +241,7 @@ Application web moderne, responsive et sécurisée permettant à une église de 
 ### Phase 6 : Présences + Rapports
 - Objectif : consulter et exporter.
 - Livrable : historique des présences, rapports journalier/hebdo/mensuel/annuel par communauté/membre/événement, export PDF/Excel.
-- **Statut : Terminé** — page `/reports` (rapports journalier / hebdo / mensuel, navigation entre périodes, filtre par communauté, graphique d'évolution + répartition par communauté, tableau détaillé, export CSV) ; historique personnel des présences ajouté sur la fiche membre (`/members/:number`) avec statistiques, graphique mensuel et liste chronologique des événements pointés.
+- **Statut : Terminé** — page `/reports` (rapports journalier / hebdo / mensuel, navigation entre périodes, filtre par communauté, graphique d'évolution + répartition par communauté, tableau détaillé, export PDF / Excel) ; historique personnel des présences ajouté sur la fiche membre (`/members/:number`) avec statistiques, graphique mensuel et liste chronologique des événements pointés.
 
 ### Phase 7 : Notifications + Historique + Paramètres
 - Objectif : finaliser le périmètre système.

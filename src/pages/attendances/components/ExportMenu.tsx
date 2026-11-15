@@ -109,7 +109,8 @@ export default function ExportMenu({ onExportDay, onExportAll, countForDate, tot
 
           <button
             onClick={runAll}
-            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-background-200 px-4 py-2.5 text-sm font-medium text-foreground-700 transition-colors hover:bg-background-100"
+            disabled={totalCount === 0}
+            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-background-200 px-4 py-2.5 text-sm font-medium text-foreground-700 transition-colors hover:bg-background-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <i className="ri-history-line text-base"></i>
             Exporter tout l'historique ({totalCount})

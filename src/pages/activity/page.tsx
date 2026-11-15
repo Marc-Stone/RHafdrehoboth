@@ -3,6 +3,7 @@ import { useActivity } from '@/hooks/useActivity';
 import type { ActivityAction } from '@/lib/types';
 import { formatDateFr } from '@/utils/date';
 import { exportTableToPdf } from '@/utils/exportPdf';
+import { logActivity } from '@/lib/activity';
 import PageHeader from '@/components/base/PageHeader';
 
 const actionMeta: Record<ActivityAction, { icon: string; color: string }> = {
@@ -74,9 +75,19 @@ export default function ActivityPage() {
   const visibleLogs = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
 
   const handleExport = () => {
+    // Le sous-titre décrit ce qui est réellement exporté (avant : toujours
+    // « Les 200 dernières actions », même après une recherche ou un filtre).
+    const parts: string[] = [];
+    if (actionFilter) parts.push(`action « ${actionLabels[actionFilter as ActivityAction] ?? actionFilter} »`);
+    if (search.trim()) parts.push(`recherche « ${search.trim()} »`);
+    const count = `${filtered.length} action${filtered.length > 1 ? 's' : ''}`;
+    const subtitle =
+      parts.length > 0
+        ? `${count} parmi les 200 dernières — Filtres : ${parts.join(', ')}`
+        : `${count} (les 200 dernières enregistrées dans l'application)`;
     exportTableToPdf({
       title: "Journal d'activité",
-      subtitle: 'Les 200 dernières actions enregistrées dans l\'application',
+      subtitle,
       columns: ['Utilisateur', 'Rôle', 'Action', 'Détails', 'Date', 'Heure'],
       rows: filtered.map((log) => [
         log.user,
@@ -87,6 +98,9 @@ export default function ActivityPage() {
         log.time,
       ]),
     });
+    // L'export du journal est lui-même journalisé, puis la liste est rafraîchie
+    // pour que la nouvelle entrée apparaisse immédiatement.
+    void logActivity('export', `a exporté le journal d'activité en PDF (${count})`).then(() => fetchLogs());
   };
 
   const handleClear = async () => {
